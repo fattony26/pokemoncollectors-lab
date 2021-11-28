@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link 
+  href="https://cdn.jsdelivr.net/npm/mc-datepicker/dist/mc-calendar.min.css" 
+  rel="stylesheet" 
+/>
+<script 
+  src="https://cdn.jsdelivr.net/npm/mc-datepicker/dist/mc-calendar.min.js"
+>
+</script>
+<link 
+  rel="stylesheet" 
+  type="text/css" 
+  href="{% static 'css/pokemon-detail.css' %}"
+/>
+<script defer src="{% static 'js/pokemon-detail.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+<section class="pokemon-container">
+  <div class="pokemon-img">
+    <img 
+      src="{% static 'images/sk8r-boi-pokemon.svg' %}" 
+      alt="A skater boy pokemon"
+    >
+  </div>
+  <div class="pokemon-details">
+    <h1>{{ pokemon.name }}</h1>
+    {% if pokemon.age > 0 %}
+      <h2>A {{ pokemon.age }} year old {{ pokemon.hp }}</h2>
+    {% else %}
+      <h2>A {{ pokemon.hp }} kitten.</h2>
+    {% endif %}
+    <p>{{ pokemon.description }}</p>
+    <br />
+    <div class="pokemon=actions">
+      <a href="{% url 'pokemons_update' pokemon.id %}" class="btn warn">Edit</a>
+      <a href="{% url 'pokemons_delete' pokemon.id %}" class='btn danger'>Delete</a>
+    </div>
+  </div>
+</section>
+<div class="feedings-toy-container">
+  <section class="feedings">
+    <div class="subsection-title">
+      <h2>Feedings</h2>
+      <img 
+        src="{% static 'images/pokemon-cone.svg' %}" 
+        alt="An ice cream cone pokemon"
+      />
+      <img 
+        src="{% static 'images/pokemon-onigiri.svg' %}"
+        alt="A pokemon as onigiri"
+      />
+      <img 
+        src="{% static 'images/kitty-kabob.svg' %}" 
+        alt="A kabob of kittens"
+      />
+    </div>
+    <h3>Add a Feeding</h3>
+    <form
+      action="{% url 'add_feeding' pokemon.id %}" 
+      method="post" 
+      class="subsection-content"
+    >
+      {% if pokemon.fed_for_today %}
+        <p class="fed">{{pokemon.name}} has been fed all their meals for today!</p>
+      {% else %}
+        <p class="unfed">{{pokemon.name}} might be hungry!</p>
+      {% endif %}
+      {% csrf_token %}
+      {{ feeding_form.as_p }}
+      <button type="submit" class="btn submit">Add Feeding</button>
+    </form>
+    <h3>Past Feedings</h3>
+    {% if pokemon.feeding_set.all.count %}
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Meal</th></tr>
+        </thead>
+        <tbody>
+          {% for feeding in pokemon.feeding_set.all %}
+            <tr>
+              <td>{{feeding.date}}</td>
+              <td>{{feeding.get_meal_display}}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="subsection-content">{{pokemon.name}} has never been fed 😟</p>
+    {% endif %}
+  </section>
+  <section class="toys">
+    <div class="subsection-title">
+      <h2>Toys</h2>
+      <img src="{% static 'images/string.svg' %}" alt="A ball of string" />
+      <img src="{% static 'images/mouse.svg' %}" alt="A mouse" />
+      <img src="{% static 'images/fish.svg' %}" alt="A fishy toy" />
+    </div>
+    <h3>{{ pokemon.name }}'s Toys</h3>
+    <div class="subsection-content">
+      {% if pokemon.toys.count %}
+        {% for toy in pokemon.toys.all %}
+          <div class="toy-container">
+            <div 
+              class="color-block"
+              style="background-color: {{ toy.color }}"
+            ></div>
+            <a href="{% url 'toys_detail' toy.id %}">
+              <p>A {{ toy.color }} {{ toy.name }}</p>
+            </a>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="no-toys">{{pokemon.name}} doesn't have any toys 😞</p>
+      {% endif %}
+    </div>
+    <h3>Available Toys</h3>
+    <div class="subsection-content">
+    {% if toys.count %}
+        {% for toy in toys.all %}
+          <div class="toy-container">
+            <div 
+              class="color-block"
+              style="background-color: {{ toy.color }}"
+            ></div>
+            <a href="{% url 'toys_detail' toy.id %}">
+              <p>A {{ toy.color }} {{ toy.name }}</p>
+            </a>
+            <form action="{% url 'assoc_toy' pokemon.id toy.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn submit">Give toy</button>
+            </form>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="all-toys">
+          {{pokemon.name}} already has all the available toys 🥳
+        </p>
+      {% endif %}
+    </div>
+  </section>
+</div>
+    </div>
+  </section>
+</div>
+</div>
+
+{% endblock %}
