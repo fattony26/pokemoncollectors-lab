@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/pokemon-index.css' %}"/>
+{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+  <h1>Pokemon List</h1>
+  <img src="{% static 'images/cool-pokemon.svg' %}" alt="A cool pokemon" />
+  <img src="{% static 'images/happy-pokemon.svg' %}" alt="A happy pokemon" />
+  <img src="{% static 'images/teacup-pokemon.svg' %}" alt="A pokemon in a teacup" />
+  <img src="{% static 'images/pokemon-in-box.svg' %}" alt="A pokemon in a box" />
+</section>
+
+<section class="card-container">
+  {% for pokemon in pokemons %}
+    <div class="card">
+      <a href="{% url 'pokemons_detail' pokemon.id %}">
+        <div class="card-content">
+          <div class="card-img-container">
+            <img 
+              src="{% static 'images/sk8r-boi-pokemon.svg' %}" 
+              alt="A skater boy pokemon"
+            >
+          </div>
+          <h2 class="card-title">{{ pokemon.name }}</h2>
+          {% if pokemon.age > 0 %}
+            <p>A {{ pokemon.age }} year old {{ pokemon.hp }}</p>
+          {% else %}
+            <p>A {{ pokemon.hp }} pokemon.</p>
+          {% endif %}
+          <p><small>{{ pokemon.description }}</small></p>
+        </div>
+      </a>
+    </div>
+  {% endfor %}
+</section>
+
+{% endblock %}
