@@ -188,7 +188,7 @@ nav li {
   }
 
   .header-logo-container {
-    width: 213px;
+    width: 210px;
   }
 
   .page-header h1 {
@@ -242,8 +242,8 @@ nav li {
   .header-logo-container {
     /* visual fix to help align logo */
     padding-top: 6px;
-    width: 256px;
-    height: 35px;
+    width: 225px;
+    height: 70px;
   }
 
   @supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
